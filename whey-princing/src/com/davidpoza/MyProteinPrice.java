@@ -25,7 +25,7 @@ public class MyProteinPrice extends Price {
     if (this.getDiscount() > 0) {
       p *= 1 - this.getDiscount()/100;
     }
-    this.setPrice(p);
+    this.setPrice(p / this.getKg());
     System.out.println("Price found! " + this.getPrice());
   };
   

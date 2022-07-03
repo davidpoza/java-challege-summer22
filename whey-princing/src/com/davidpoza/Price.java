@@ -19,6 +19,7 @@ public class Price {
     this.productUrlPath = productUrlPath;
     this.brand = brand;
     this.kg = kg;
+    this.discount = 0.0;
   }
 
   protected Double parsePrice(String price) throws Exception {
