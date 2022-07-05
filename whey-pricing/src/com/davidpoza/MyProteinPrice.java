@@ -1,6 +1,8 @@
 package com.davidpoza;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.jsoup.Jsoup;
@@ -8,10 +10,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class MyProteinPrice extends Price {
-  public MyProteinPrice(String productUrlPath, Double kg) {
-    super("https://www.myprotein.es/", productUrlPath, "MyProtein", kg);
+  public MyProteinPrice(Connection con, String productUrlPath, LocalDateTime date, Double kg, int productId) {
+    super(con, "https://www.myprotein.es/", productUrlPath, date, "MyProtein", kg, productId);
   }
   
+  public MyProteinPrice(Connection con, String productUrlPath, Double kg, int productId) {
+    super(con, "https://www.myprotein.es/", productUrlPath, "MyProtein", kg, productId);
+  }
+ 
   @Override
   public void scrapPrice() throws Exception, IOException {   
     super.scrapPrice();

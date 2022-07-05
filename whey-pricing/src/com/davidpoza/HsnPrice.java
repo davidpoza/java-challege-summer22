@@ -1,15 +1,20 @@
 package com.davidpoza;
 
 import java.io.IOException;
-
+import java.sql.Connection;
+import java.time.LocalDateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class HsnPrice extends Price {
 
-  public HsnPrice(String productUrlPath, Double kg) {
-    super("https://www.hsnstore.com/", productUrlPath, "HSN", kg);
+  public HsnPrice(Connection con, String productUrlPath, LocalDateTime date, Double kg, int productId) {
+    super(con, "https://www.hsnstore.com/", productUrlPath, date, "HSN", kg, productId);
+  }
+  
+  public HsnPrice(Connection con, String productUrlPath, Double kg, int productId) {
+    super(con, "https://www.hsnstore.com/", productUrlPath, "HSN", kg, productId);
   }
   
   @Override
