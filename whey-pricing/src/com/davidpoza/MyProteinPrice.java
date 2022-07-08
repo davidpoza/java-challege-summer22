@@ -10,19 +10,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class MyProteinPrice extends Price {
-  public MyProteinPrice(Connection con, String productUrlPath, LocalDateTime date, Double kg, int productId) {
-    super(con, "https://www.myprotein.es/", productUrlPath, date, "MyProtein", kg, productId);
+  public MyProteinPrice(Connection con, String url, LocalDateTime date, Double kg, Product product) {
+    super(con, url, date, kg, product);
   }
   
-  public MyProteinPrice(Connection con, String productUrlPath, Double kg, int productId) {
-    super(con, "https://www.myprotein.es/", productUrlPath, "MyProtein", kg, productId);
+  public MyProteinPrice(Connection con, String url, Double kg, Product product) {
+    super(con, url, kg, product);
   }
- 
+  
   @Override
   public void scrapPrice() throws Exception, IOException {   
     super.scrapPrice();
     Document doc = null;
-    doc = Jsoup.connect(this.baseUrl + this.productUrlPath).get();
+    doc = Jsoup.connect(this.url).get();
     Elements price = doc.select("p.productPrice_price");
     if (price.isEmpty()) throw new Exception("Price not found");
     String s = price.first().text();

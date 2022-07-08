@@ -9,12 +9,12 @@ import org.jsoup.select.Elements;
 
 public class HsnPrice extends Price {
 
-  public HsnPrice(Connection con, String productUrlPath, LocalDateTime date, Double kg, int productId) {
-    super(con, "https://www.hsnstore.com/", productUrlPath, date, "HSN", kg, productId);
+  public HsnPrice(Connection con, String url, LocalDateTime date, Double kg, Product product) {
+    super(con, url, date, kg, product);
   }
   
-  public HsnPrice(Connection con, String productUrlPath, Double kg, int productId) {
-    super(con, "https://www.hsnstore.com/", productUrlPath, "HSN", kg, productId);
+  public HsnPrice(Connection con, String url, Double kg, Product product) {
+    super(con, url, kg, product);
   }
   
   @Override
@@ -23,7 +23,7 @@ public class HsnPrice extends Price {
     // scraped prices in Hsn always refer to 500g. we calculate the final price applying per-amount discount
     Double refKg = 0.5;
     Document doc = null;
-    doc = Jsoup.connect(this.baseUrl + this.productUrlPath).get();
+    doc = Jsoup.connect(this.url).get();
     Elements price = doc.select("div.final-price");
     if (price.isEmpty()) throw new Exception("Price not found");
     String s = price.first().text();

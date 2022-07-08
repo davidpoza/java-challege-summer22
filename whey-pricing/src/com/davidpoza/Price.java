@@ -3,39 +3,39 @@ package com.davidpoza;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Document;
 
 public class Price {
-  protected String baseUrl;
-  protected String productUrlPath;
+  protected String url;
   private LocalDateTime date;
   private Double price;
-  private String brand;
-  private int productId;
+  private Product product;
   private Double discount;
   protected Double kg;
   protected Connection con;
   
-  public Price(Connection con, String baseUrl, String productUrlPath, LocalDateTime date, String brand, Double kg, int productId) {
+  public Price(Connection con, String url, LocalDateTime date, Double kg, Product product) {
     super();
-    this.baseUrl = baseUrl;
-    this.productUrlPath = productUrlPath;
-    this.brand = brand;
+    this.url = url;
     this.kg = kg;
     this.discount = 0.0;
     this.date = date;
-    this.productId = productId;
+    this.product = product;
     this.con = con;
   }
   
-  public Price(Connection con, String baseUrl, String productUrlPath, String brand, Double kg, int productId) {
-    this(con, baseUrl, productUrlPath, LocalDateTime.now(), brand, kg, productId);
+  public Price(Connection con, String url, Double kg, Product product) {
+    this(con, url, LocalDateTime.now(), kg, product);
   }
 
   protected Double parsePrice(String price) throws Exception {
@@ -61,7 +61,7 @@ public class Price {
       statement.setString(1, this.date.format(dateTimeFormatter));
       statement.setDouble(2, this.price);
       statement.setDouble(3, this.discount);
-      statement.setInt(4, this.productId);
+      statement.setInt(4, this.product.getId());
       statement.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
@@ -76,14 +76,6 @@ public class Price {
     return false;
   }
   
-  public String getBaseUrl() {
-    return baseUrl;
-  }
-
-  public void setBaseUrl(String baseUrl) {
-    this.baseUrl = baseUrl;
-  }
-
   public Double getPrice() {
     return price;
   }
@@ -92,28 +84,12 @@ public class Price {
     this.price = price;
   }
 
-  public String getBrand() {
-    return brand;
-  }
-
-  public void setBrand(String brand) {
-    this.brand = brand;
-  }
-
   public Double getDiscount() {
     return discount;
   }
 
   public void setDiscount(Double discount) {
     this.discount = discount;
-  }
-
-  public String getProductUrlPath() {
-    return productUrlPath;
-  }
-
-  public void setProductUrlPath(String productUrlPath) {
-    this.productUrlPath = productUrlPath;
   }
 
   public Double getKg() {
@@ -132,13 +108,22 @@ public class Price {
     this.date = date;
   }
 
-  public int getProductId() {
-    return productId;
+  public String getUrl() {
+    return url;
   }
 
-  public void setProductId(int productId) {
-    this.productId = productId;
+  public void setUrl(String url) {
+    this.url = url;
   }
-  
+
+  public Product getProduct() {
+    return product;
+  }
+
+  public void setProduct(Product product) {
+    this.product = product;
+  }
+
+
   
 }
