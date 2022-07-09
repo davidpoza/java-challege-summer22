@@ -8,13 +8,7 @@ public class WheyPricing {
   public static void main(String[] args) throws Exception {
     final Connection con = DbConnection.connect();
       PriceChart chart = new PriceChart(con, null, null);
-//    MyProteinPrice p1 = new MyProteinPrice(con, "nutricion-deportiva/impact-whey-protein/10530943.html?variation=12309348", 5.0, 1);
-//    p1.scrapPrice();
-//    p1.save();
-//    
-//    HsnPrice p2 = new HsnPrice(con, "/marcas/raw-series/whey-protein-concentrate-80-2-0", 4.0, 1);
-//    p2.scrapPrice();
-//    p2.save();
+      chart.draw();
     
     if (con != null) {
       try {

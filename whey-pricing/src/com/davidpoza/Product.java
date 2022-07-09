@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Product {
@@ -28,23 +30,25 @@ public class Product {
     this.url = url;
     this.brand = brand;  
     this.id = id;
+    this.prices = new ArrayList<Price>();
     this.readPrices();
   }
 
   private ArrayList<Price> readPrices() {
     
     try {
-      PreparedStatement statement = con.prepareStatement("SELECT date, amount, discount, product_id FROM prices_tbl");
+      PreparedStatement statement = con.prepareStatement("SELECT date, amount, discount, product_id FROM prices_tbl WHERE product_id = ?");
+      statement.setInt(1, this.id);
       statement.execute();
       ResultSet rs = statement.getResultSet();
       Price p = null;
       while(rs.next()) {
         switch(Brand.valueOf(this.brand)) {
           case MYPROTEIN:
-            p = new MyProteinPrice(con, this.url, rs.getTimestamp("date").toLocalDateTime(), rs.getDouble("amount"), this);
+            p = new MyProteinPrice(con, this.url, LocalDateTime.parse(rs.getString("date")), 1.0, rs.getDouble("amount"), this);
             break;
           case HSN:
-            p = new HsnPrice(con, this.url, rs.getTimestamp("date").toLocalDateTime(), rs.getDouble("amount"), this);
+            p = new HsnPrice(con, this.url, LocalDateTime.parse(rs.getString("date")), 1.0, rs.getDouble("amount"), this);
             break;
           case PROZIS:
             break;
