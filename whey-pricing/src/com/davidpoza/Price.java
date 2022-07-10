@@ -61,6 +61,7 @@ public class Price {
 
   public void save() {
     try {
+      if (!this.isValid()) return;
       PreparedStatement statement = con.prepareStatement("INSERT INTO prices_tbl (date, amount, discount, product_id) VALUES (?, ?, ?, ?)");
       DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_DATE_TIME;
       statement.setString(1, this.date.format(dateTimeFormatter));
@@ -71,6 +72,15 @@ public class Price {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+  
+  private boolean isValid( ) {
+    if (this.amount == null
+        || this.product == null 
+        || this.date == null) {
+      return false;
+    }
+    return true;
   }
   
   public Double getAmount() {

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -18,6 +19,7 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -57,7 +59,9 @@ public class PriceChart {
         LocalDateTime date = price.getDate();
         series.add(new Day(date.getDayOfMonth(), date.getMonthValue(), date.getYear()), price.getAmount());
       }
-      this.dataset.addSeries(series);    
+      if(!series.isEmpty()) {
+        this.dataset.addSeries(series);            
+      }
     }
   }
   
@@ -71,6 +75,14 @@ public class PriceChart {
     );
     XYPlot plot = (XYPlot)chart.getPlot();
     plot.setBackgroundPaint(new Color(255,228,196));
+//    XYItemRenderer renderer = plot.getRenderer();
+//    renderer.setSeriesPaint( 0, Color.BLUE );
+
+//    renderer.setSeriesPaint( 1, Color.RED );
+//
+//    renderer.setSeriesPaint( 2, Color.ORANGE );
+//
+//    renderer.setSeriesPaint( 3, Color.GREEN);
     String dateFormat = "dd/MM/YY";
     DateAxis axis = (DateAxis) plot.getDomainAxis();
     axis.setDateFormatOverride(new SimpleDateFormat(dateFormat));

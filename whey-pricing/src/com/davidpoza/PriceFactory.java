@@ -26,6 +26,7 @@ public class PriceFactory {
         this.price = new ProzisPrice(con, url, date, amount, product);
         break;
       case BULKPOWDERS:
+        this.price = new BulkPowdersPrice(con, url, date, amount, product);
         break;
     };
   }
@@ -43,6 +44,7 @@ public class PriceFactory {
         this.price = new ProzisPrice(con);
         break;
       case BULKPOWDERS:
+        this.price = new BulkPowdersPrice(con);
         break;
     };
   }
