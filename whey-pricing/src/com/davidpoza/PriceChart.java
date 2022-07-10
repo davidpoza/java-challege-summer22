@@ -1,6 +1,9 @@
 package com.davidpoza;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +25,9 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class PriceChart {
   private Connection con;
@@ -103,7 +109,12 @@ public class PriceChart {
         e.printStackTrace();
       }
       newPrice.save();
-    }
+    }  
+  }
   
+  public void sendToTelegram() {
+    
+
+
   }
 }
