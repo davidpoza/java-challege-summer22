@@ -44,7 +44,7 @@ public class Price {
   }
 
   protected Double parsePrice(String price) throws Exception {
-    Pattern pattern = Pattern.compile("\\d*,?\\d*");
+    Pattern pattern = Pattern.compile("\\d*[,.]?\\d*");
     Matcher matcher = pattern.matcher(price);
     if (matcher.find()) {
       Double d = Double.parseDouble(matcher.group(0).replace(',', '.'));

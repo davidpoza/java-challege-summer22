@@ -40,6 +40,6 @@ public class HsnPrice extends Price {
     }
     this.setAmount(p / refKg);
     this.setDate(LocalDateTime.now());
-    System.out.println("Price found! " + this.getAmount());
+    System.out.println("New price found for HSN! " + this.getAmount());
   };
 }

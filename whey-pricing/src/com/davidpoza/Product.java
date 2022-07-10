@@ -35,7 +35,7 @@ public class Product {
     this.readPrices();
   }
 
-  private ArrayList<Price> readPrices() {
+  private void readPrices() {
     
     try {
       PreparedStatement statement = con.prepareStatement("SELECT date, amount, discount, product_id FROM prices_tbl WHERE product_id = ?");
@@ -49,9 +49,7 @@ public class Product {
       }
     } catch (SQLException e) {
       e.printStackTrace();
-    }
-    return null;
-          
+    }          
   }
   
   public String getName() {

@@ -92,11 +92,13 @@ public class PriceChart {
     for (int i = 0; i < products.size(); i++) {
       Product p = products.get(i);
       ArrayList<Price> prices = p.getPrices();
-      Price last = prices.get(prices.size() - 1);
+      Price last = prices.size() > 0 ? prices.get(prices.size() - 1) : null;
       LocalDateTime today = LocalDateTime.now();
-      if (last.getDate().getDayOfMonth() != today.getDayOfMonth()
+      if (prices.size() == 0 
+          || last.getDate().getDayOfMonth() != today.getDayOfMonth()
           || last.getDate().getMonthValue() != today.getMonthValue()
-          || last.getDate().getYear() != today.getYear()) {
+          || last.getDate().getYear() != today.getYear()    
+         ){
         Price newPrice = new PriceFactory(con, p.getBrand()).getPrice();
         newPrice.setUrl(p.getUrl());
         newPrice.setProduct(p);

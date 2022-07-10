@@ -5,21 +5,23 @@ import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-public class MyProteinPrice extends Price {
+public class ProzisPrice extends Price {
   
-  public MyProteinPrice(Connection con) {
+  public ProzisPrice(Connection con) {
     super(con);
   }
   
-  public MyProteinPrice(Connection con, String url, LocalDateTime date, Double amount, Product product) {
+  public ProzisPrice(Connection con, String url, LocalDateTime date, Double amount, Product product) {
     super(con, url, date, amount, product);
   }
   
-  public MyProteinPrice(Connection con, String url, Double amount, Product product) {
+  public ProzisPrice(Connection con, String url, Double amount, Product product) {
     super(con, url, amount, product);
   }
   
@@ -27,8 +29,19 @@ public class MyProteinPrice extends Price {
   public void scrapPrice() throws Exception, IOException {   
     super.scrapPrice();
     Document doc = null;
-    doc = Jsoup.connect(this.url).get();
-    Elements price = doc.select("p.productPrice_price");
+    Response res = Jsoup.connect(this.url)
+      .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36")
+      .ignoreContentType(true)
+      .referrer("http://www.google.com")   
+      .ignoreHttpErrors(true) 
+      .execute();
+    doc = Jsoup.connect(this.url)
+      .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36")
+      .ignoreContentType(true)
+      .ignoreHttpErrors(true)
+      .cookies(res.cookies())
+      .get();
+    Elements price = doc.select("div#ob-product-price");
     if (price.isEmpty()) throw new Exception("Price not found");
     String s = price.first().text();
     this.checkDiscount(doc);
@@ -38,12 +51,12 @@ public class MyProteinPrice extends Price {
     }
     this.setAmount(p / this.getProduct().getKg());
     this.setDate(LocalDateTime.now());
-    System.out.println("New price found for Myprotein! " + this.getAmount());
+    System.out.println("New price found for Prozis! " + this.getAmount());
   };
   
   @Override
   protected void checkDiscount(Document doc) {
-    Elements discount = doc.select("span.papBanner_text");
+    Elements discount = doc.select("span.coupon-title");
     if (discount.isEmpty()) return;
     String s = discount.first().text();
     Pattern pattern = Pattern.compile("\\d*%");

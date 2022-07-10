@@ -23,6 +23,7 @@ public class PriceFactory {
         this.price = new HsnPrice(con, url, date, amount, product);
         break;
       case PROZIS:
+        this.price = new ProzisPrice(con, url, date, amount, product);
         break;
       case BULKPOWDERS:
         break;
@@ -39,6 +40,7 @@ public class PriceFactory {
         this.price = new HsnPrice(con);
         break;
       case PROZIS:
+        this.price = new ProzisPrice(con);
         break;
       case BULKPOWDERS:
         break;
