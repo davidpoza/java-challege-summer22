@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class Product {
@@ -14,6 +13,7 @@ public class Product {
   private String name;
   private String url;
   private String brand;
+  private Double kg;
   private ArrayList<Price> prices;
   
   public enum Brand {
@@ -23,13 +23,14 @@ public class Product {
     BULKPOWDERS
   }
   
-  public Product(Connection con, int id, String name, String url, String brand) {
+  public Product(Connection con, int id, String name, String url, String brand, Double kg) {
     super();
     this.con = con;
     this.name = name;
     this.url = url;
     this.brand = brand;  
     this.id = id;
+    this.setKg(kg);
     this.prices = new ArrayList<Price>();
     this.readPrices();
   }
@@ -41,20 +42,9 @@ public class Product {
       statement.setInt(1, this.id);
       statement.execute();
       ResultSet rs = statement.getResultSet();
-      Price p = null;
       while(rs.next()) {
-        switch(Brand.valueOf(this.brand)) {
-          case MYPROTEIN:
-            p = new MyProteinPrice(con, this.url, LocalDateTime.parse(rs.getString("date")), 1.0, rs.getDouble("amount"), this);
-            break;
-          case HSN:
-            p = new HsnPrice(con, this.url, LocalDateTime.parse(rs.getString("date")), 1.0, rs.getDouble("amount"), this);
-            break;
-          case PROZIS:
-            break;
-          case BULKPOWDERS:
-            break;
-        }
+        Price p = null;
+        p = new PriceFactory(con, this.brand, this.url, LocalDateTime.parse(rs.getString("date")), rs.getDouble("amount"), this).getPrice();
         this.prices.add(p);
       }
     } catch (SQLException e) {
@@ -102,6 +92,14 @@ public class Product {
 
   public void setId(int id) {
     this.id = id;
+  }
+
+  public Double getKg() {
+    return kg;
+  }
+
+  public void setKg(Double kg) {
+    this.kg = kg;
   }
   
 }

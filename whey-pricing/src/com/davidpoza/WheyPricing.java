@@ -8,6 +8,7 @@ public class WheyPricing {
   public static void main(String[] args) throws Exception {
     final Connection con = DbConnection.connect();
       PriceChart chart = new PriceChart(con, null, null);
+      chart.updatePrices();
       chart.draw();
     
     if (con != null) {

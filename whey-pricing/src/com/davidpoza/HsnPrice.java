@@ -8,13 +8,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class HsnPrice extends Price {
+  
+  HsnPrice(Connection con) {
+    super(con);
+  }
 
-  public HsnPrice(Connection con, String url, LocalDateTime date, Double kg, Double amount, Product product) {
-    super(con, url, date, kg, amount, product);
+  public HsnPrice(Connection con, String url, LocalDateTime date, Double amount, Product product) {
+    super(con, url, date, amount, product);
   }
   
-  public HsnPrice(Connection con, String url, Double kg, Double amount, Product product) {
-    super(con, url, kg, amount, product);
+  public HsnPrice(Connection con, String url, Double amount, Product product) {
+    super(con, url, amount, product);
   }
   
   @Override
@@ -28,13 +32,14 @@ public class HsnPrice extends Price {
     if (price.isEmpty()) throw new Exception("Price not found");
     String s = price.first().text();
 //    this.checkDiscount(doc);
-    if (this.getKg() == 2d) this.setDiscount(20d);
-    else if(this.getKg() == 4d)this.setDiscount(25d);
+    if (this.getProduct().getKg() == 2d) this.setDiscount(20d);
+    else if(this.getProduct().getKg() == 4d) this.setDiscount(25d);
     Double p = this.parsePrice(s);
     if (this.getDiscount() > 0) {
       p *= 1 - this.getDiscount()/100;
     }
     this.setAmount(p / refKg);
+    this.setDate(LocalDateTime.now());
     System.out.println("Price found! " + this.getAmount());
   };
 }

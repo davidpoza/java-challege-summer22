@@ -13,5 +13,6 @@ CREATE TABLE "products_tbl" (
 	"name"	TEXT,
 	"url"	TEXT,
 	"brand"	TEXT,
+	"kg"	REAL,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );

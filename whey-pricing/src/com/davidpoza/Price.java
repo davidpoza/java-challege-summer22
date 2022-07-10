@@ -3,13 +3,9 @@ package com.davidpoza;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,10 +20,19 @@ public class Price {
   protected Double kg;
   protected Connection con;
   
-  public Price(Connection con, String url, LocalDateTime date, Double kg, Double amount, Product product) {
+  public Price(Connection con) {
+    this.url = null;
+    this.kg = null;
+    this.discount = 0d;
+    this.date = null;
+    this.product = null;
+    this.con = con;
+    this.amount = null;
+  }
+  
+  public Price(Connection con, String url, LocalDateTime date, Double amount, Product product) {
     super();
     this.url = url;
-    this.kg = kg;
     this.discount = 0.0;
     this.date = date;
     this.product = product;
@@ -35,8 +40,8 @@ public class Price {
     this.amount = amount;
   }
   
-  public Price(Connection con, String url, Double kg, Double amount, Product product) {
-    this(con, url, LocalDateTime.now(), kg, amount, product);
+  public Price(Connection con, String url, Double amount, Product product) {
+    this(con, url, LocalDateTime.now(), amount, product);
   }
 
   protected Double parsePrice(String price) throws Exception {
@@ -91,14 +96,6 @@ public class Price {
 
   public void setDiscount(Double discount) {
     this.discount = discount;
-  }
-
-  public Double getKg() {
-    return kg;
-  }
-
-  public void setKg(Double kg) {
-    this.kg = kg;
   }
 
   public LocalDateTime getDate() {

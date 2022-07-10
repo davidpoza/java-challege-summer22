@@ -38,11 +38,11 @@ public class PriceChart {
   
   public void getAllProducts() {
     try {
-      PreparedStatement statement = con.prepareStatement("SELECT id, name, url, brand FROM products_tbl");
+      PreparedStatement statement = con.prepareStatement("SELECT id, name, url, brand, kg FROM products_tbl");
       statement.execute();
       ResultSet rs = statement.getResultSet();
       while(rs.next()) {
-        this.products.add(new Product(con, rs.getInt("id"), rs.getString("name"), rs.getString("url"), rs.getString("brand")));
+        this.products.add(new Product(con, rs.getInt("id"), rs.getString("name"), rs.getString("url"), rs.getString("brand"), rs.getDouble("kg")));
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -87,5 +87,23 @@ public class PriceChart {
     } catch (IOException ex) {
         
     }
+  }
+  
+  public void updatePrices( ) {
+    for (int i = 0; i < products.size(); i++) {
+      Product p = products.get(i);
+      Price newPrice = new PriceFactory(con, p.getBrand()).getPrice();
+      newPrice.setUrl(p.getUrl());
+      newPrice.setProduct(p);
+      try {
+        newPrice.scrapPrice();
+      } catch (IOException e) {
+        e.printStackTrace();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      newPrice.save();
+    }
+  
   }
 }

@@ -10,12 +10,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class MyProteinPrice extends Price {
-  public MyProteinPrice(Connection con, String url, LocalDateTime date, Double kg, Double amount, Product product) {
-    super(con, url, date, kg, amount, product);
+  
+  public MyProteinPrice(Connection con) {
+    super(con);
   }
   
-  public MyProteinPrice(Connection con, String url, Double kg, Double amount, Product product) {
-    super(con, url, kg, amount, product);
+  public MyProteinPrice(Connection con, String url, LocalDateTime date, Double amount, Product product) {
+    super(con, url, date, amount, product);
+  }
+  
+  public MyProteinPrice(Connection con, String url, Double amount, Product product) {
+    super(con, url, amount, product);
   }
   
   @Override
@@ -31,7 +36,8 @@ public class MyProteinPrice extends Price {
     if (this.getDiscount() > 0) {
       p *= 1 - this.getDiscount()/100;
     }
-    this.setAmount(p);
+    this.setAmount(p / this.getProduct().getKg());
+    this.setDate(LocalDateTime.now());
     System.out.println("Price found! " + this.getAmount());
   };
   
