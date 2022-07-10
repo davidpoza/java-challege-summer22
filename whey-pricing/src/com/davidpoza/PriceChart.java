@@ -98,17 +98,24 @@ public class PriceChart {
   public void updatePrices( ) {
     for (int i = 0; i < products.size(); i++) {
       Product p = products.get(i);
-      Price newPrice = new PriceFactory(con, p.getBrand()).getPrice();
-      newPrice.setUrl(p.getUrl());
-      newPrice.setProduct(p);
-      try {
-        newPrice.scrapPrice();
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (Exception e) {
-        e.printStackTrace();
+      ArrayList<Price> prices = p.getPrices();
+      Price last = prices.get(prices.size() - 1);
+      LocalDateTime today = LocalDateTime.now();
+      if (last.getDate().getDayOfMonth() != today.getDayOfMonth()
+          || last.getDate().getMonthValue() != today.getMonthValue()
+          || last.getDate().getYear() != today.getYear()) {
+        Price newPrice = new PriceFactory(con, p.getBrand()).getPrice();
+        newPrice.setUrl(p.getUrl());
+        newPrice.setProduct(p);
+        try {
+          newPrice.scrapPrice();
+        } catch (IOException e) {
+          e.printStackTrace();
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+        newPrice.save();        
       }
-      newPrice.save();
     }  
   }
   
