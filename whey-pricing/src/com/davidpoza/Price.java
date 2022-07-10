@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.jsoup.nodes.Document;
 
 public class Price {
@@ -72,14 +71,6 @@ public class Price {
     } catch (SQLException e) {
       e.printStackTrace();
     }
-  }
-  
-  private void validate() {
-    
-  }
-  
-  private boolean exists() {
-    return false;
   }
   
   public Double getAmount() {
