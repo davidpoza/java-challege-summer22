@@ -2,11 +2,11 @@ version: "3.3"
 
 services:
   myapp:
-    image: openjdk:8-jdk-alpine
+    image: openjdk:20-jdk-bullseye
     container_name: "whey-scraper"
     restart: always
     ports:
       - 8091:8091
     volumes:
-      - "./bin/com/davidpoza/wheybot.jar:/app.jar"
-    command: ['java', '-jar', '/app.jar']
+      - "./:/app"
+    command: ["java", "-jar", "/app/wheybot.jar"]
