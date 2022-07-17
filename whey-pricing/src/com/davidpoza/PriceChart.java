@@ -1,5 +1,6 @@
 package com.davidpoza;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,8 +21,11 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
+import org.jfree.chart.labels.StandardXYItemLabelGenerator;
+import org.jfree.chart.labels.XYItemLabelGenerator;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -75,14 +81,32 @@ public class PriceChart {
     );
     XYPlot plot = (XYPlot)chart.getPlot();
     plot.setBackgroundPaint(new Color(255,228,196));
-//    XYItemRenderer renderer = plot.getRenderer();
-//    renderer.setSeriesPaint( 0, Color.BLUE );
+    XYItemRenderer renderer = plot.getRenderer();
+    final XYLineAndShapeRenderer rr = (XYLineAndShapeRenderer) renderer;
+    XYItemLabelGenerator xy = new StandardXYItemLabelGenerator(
+      StandardXYItemLabelGenerator.DEFAULT_ITEM_LABEL_FORMAT, 
+      NumberFormat.getNumberInstance(),
+      new DecimalFormat("#.##€")
+    );
+ 
+    // display dot and value
+    rr.setBaseItemLabelGenerator( xy );
+    rr.setBaseItemLabelsVisible(true);
+    rr.setBaseLinesVisible(true);
+    rr.setBaseItemLabelsVisible(true);  
 
-//    renderer.setSeriesPaint( 1, Color.RED );
-//
-//    renderer.setSeriesPaint( 2, Color.ORANGE );
-//
-//    renderer.setSeriesPaint( 3, Color.GREEN);
+    // custom colors
+    rr.setSeriesPaint( 0, Color.BLUE );
+    rr.setSeriesPaint( 1, Color.RED );
+    rr.setSeriesPaint( 2, Color.ORANGE );
+    rr.setSeriesPaint( 3, Color.GREEN);
+    
+    // custom line weight
+    rr.setSeriesStroke(0, new BasicStroke(2.0f));
+    rr.setSeriesStroke(1, new BasicStroke(2.0f));
+    rr.setSeriesStroke(2, new BasicStroke(2.0f));
+    rr.setSeriesStroke(3, new BasicStroke(2.0f));
+    
     String dateFormat = "dd/MM/YY";
     DateAxis axis = (DateAxis) plot.getDomainAxis();
     axis.setDateFormatOverride(new SimpleDateFormat(dateFormat));
