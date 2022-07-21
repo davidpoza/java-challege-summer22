@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.chart.labels.XYItemLabelGenerator;
 import org.jfree.chart.plot.XYPlot;
@@ -88,7 +90,8 @@ public class PriceChart {
       NumberFormat.getNumberInstance(),
       new DecimalFormat("#.##€")
     );
- 
+    DateAxis valueAxis = (DateAxis) plot.getDomainAxis();
+    valueAxis.setVerticalTickLabels(true);
     // display dot and value
     rr.setBaseItemLabelGenerator( xy );
     rr.setBaseItemLabelsVisible(true);
