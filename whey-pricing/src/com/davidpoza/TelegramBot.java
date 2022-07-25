@@ -9,6 +9,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import com.davidpoza.MyLogger.LogTypes;
+
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class TelegramBot extends TelegramLongPollingBot {
@@ -25,7 +28,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
   @Override
   public void onUpdateReceived(Update update) {
-
+    MyLogger.log(TelegramBot.class, LogTypes.DEBUG, "Received message");
     if (update.hasMessage() && update.getMessage().hasText()) {
       final Connection con = DbConnection.connect();
       PriceChart chart = new PriceChart(con, null, null);

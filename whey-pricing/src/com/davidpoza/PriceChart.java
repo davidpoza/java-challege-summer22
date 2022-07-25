@@ -34,6 +34,7 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.TextAnchor;
 
+import com.davidpoza.MyLogger.LogTypes;
 import com.davidpoza.PriceFactory.Brand;
 
 public class PriceChart {
@@ -51,10 +52,12 @@ public class PriceChart {
   
   public void getAllProducts() {
     try {
+      MyLogger.log(PriceChart.class, LogTypes.DEBUG, "querying all products");
       PreparedStatement statement = con.prepareStatement("SELECT id, name, url, brand, kg FROM products_tbl");
       statement.execute();
       ResultSet rs = statement.getResultSet();
       while(rs.next()) {
+        MyLogger.log(PriceChart.class, LogTypes.DEBUG, "fetched product:" + rs.getString("name"));
         this.products.add(new Product(con, rs.getInt("id"), rs.getString("name"), rs.getString("url"), rs.getString("brand"), rs.getDouble("kg")));
       }
     } catch (SQLException e) {
@@ -63,16 +66,18 @@ public class PriceChart {
   }
   
   public void buildDataSet() {
-    
+    MyLogger.log(PriceChart.class, LogTypes.DEBUG, "building dataset");
     for (int i = 0; i < products.size(); i++) {
       Product p = products.get(i);
       TimeSeriesCollection dataset = new TimeSeriesCollection();  
-      TimeSeries series = new TimeSeries(p.getName());      
+      TimeSeries series = new TimeSeries(p.getName());    
+      MyLogger.log(PriceChart.class, LogTypes.DEBUG, "creating timeseries for " + p.getName());
       for (int j = 0; j < p.getPrices().size(); j++) {
         Price price = p.getPrices().get(j);
         LocalDateTime date = price.getDate();
         series.add(new Day(date.getDayOfMonth(), date.getMonthValue(), date.getYear()), price.getAmount());
       }
+      MyLogger.log(PriceChart.class, LogTypes.DEBUG, "adding series to dataset");
       dataset.addSeries(series);
       this.datasets.add(dataset);
     }
@@ -93,7 +98,8 @@ public class PriceChart {
     }
   }
   
-  public void draw() {    
+  public void draw() {   
+    MyLogger.log(PriceChart.class, LogTypes.DEBUG, "drawing charts");
     DateAxis domainAxis = new DateAxis("Date");
     String dateFormat = "dd MMM";
     domainAxis.setDateFormatOverride(new SimpleDateFormat(dateFormat));
@@ -102,6 +108,7 @@ public class PriceChart {
     CombinedDomainXYPlot plot = new CombinedDomainXYPlot(domainAxis);
     
     for (int i=0; i < this.datasets.size(); i++) {
+      MyLogger.log(PriceChart.class, LogTypes.DEBUG, "drawing chart:" + this.products.get(i).getBrand());
       XYDataset dataset = this.datasets.get(i);
       NumberAxis rangeAxis = new NumberAxis("Price per kg in €");
       rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -134,6 +141,7 @@ public class PriceChart {
     );
     
     try {
+      MyLogger.log(PriceChart.class, LogTypes.DEBUG, "saving chart as image");
       OutputStream out = new FileOutputStream("tmp.png");
       ChartUtilities.writeChartAsPNG(out,
         chart,
@@ -146,6 +154,7 @@ public class PriceChart {
   }
   
   public void updatePrices( ) {
+    MyLogger.log(PriceChart.class, LogTypes.DEBUG, "updating prices");
     for (int i = 0; i < products.size(); i++) {
       Product p = products.get(i);
       ArrayList<Price> prices = p.getPrices();
