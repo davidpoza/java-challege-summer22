@@ -2,6 +2,7 @@ package com.davidpoza;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,28 +15,31 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.DateTickUnit;
 import org.jfree.chart.axis.DateTickUnitType;
-import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardXYItemLabelGenerator;
 import org.jfree.chart.labels.XYItemLabelGenerator;
+import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.ui.TextAnchor;
+
+import com.davidpoza.PriceFactory.Brand;
 
 public class PriceChart {
   private Connection con;
   private ArrayList<Product> products = new ArrayList<Product>();
-  private TimeSeriesCollection dataset = new TimeSeriesCollection();
+  private ArrayList<XYDataset> datasets = new ArrayList<XYDataset>();
   
   public  PriceChart(Connection con, LocalDateTime from, LocalDateTime to) {
     super();
@@ -59,69 +63,83 @@ public class PriceChart {
   }
   
   public void buildDataSet() {
+    
     for (int i = 0; i < products.size(); i++) {
       Product p = products.get(i);
+      TimeSeriesCollection dataset = new TimeSeriesCollection();  
       TimeSeries series = new TimeSeries(p.getName());      
       for (int j = 0; j < p.getPrices().size(); j++) {
         Price price = p.getPrices().get(j);
         LocalDateTime date = price.getDate();
         series.add(new Day(date.getDayOfMonth(), date.getMonthValue(), date.getYear()), price.getAmount());
       }
-      if(!series.isEmpty()) {
-        this.dataset.addSeries(series);            
-      }
+      dataset.addSeries(series);
+      this.datasets.add(dataset);
     }
   }
   
+  public Color getColor(String brand) {
+    switch(Brand.valueOf(brand)) {
+    case MYPROTEIN:
+      return Color.BLUE;
+    case HSN:
+      return Color.ORANGE;
+    case PROZIS:
+      return Color.RED;
+    case BULKPOWDERS:
+      return Color.GREEN;
+    default:
+      return Color.BLACK;
+    }
+  }
   
-  public void draw() {
-    JFreeChart chart = ChartFactory.createTimeSeriesChart(
+  public void draw() {    
+    DateAxis domainAxis = new DateAxis("Date");
+    String dateFormat = "dd MMM";
+    domainAxis.setDateFormatOverride(new SimpleDateFormat(dateFormat));
+    domainAxis.setTickUnit(new DateTickUnit(DateTickUnitType.DAY, 1));
+    domainAxis.setVerticalTickLabels(true);
+    CombinedDomainXYPlot plot = new CombinedDomainXYPlot(domainAxis);
+    
+    for (int i=0; i < this.datasets.size(); i++) {
+      XYDataset dataset = this.datasets.get(i);
+      NumberAxis rangeAxis = new NumberAxis("Price per kg in €");
+      rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+      
+      XYLineAndShapeRenderer renderer = new  XYLineAndShapeRenderer();
+      XYItemLabelGenerator xy = new StandardXYItemLabelGenerator(
+        StandardXYItemLabelGenerator.DEFAULT_ITEM_LABEL_FORMAT, 
+        NumberFormat.getNumberInstance(),
+        new DecimalFormat("#.##€")
+      );
+      renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(
+          ItemLabelAnchor.OUTSIDE8, TextAnchor.TOP_CENTER));
+      renderer.setBaseItemLabelGenerator(xy);
+      renderer.setBaseItemLabelsVisible(true);
+      renderer.setBaseLinesVisible(true);
+      renderer.setBaseItemLabelsVisible(true); 
+      renderer.setSeriesPaint( 0, this.getColor(this.products.get(i).getBrand()));
+      renderer.setSeriesStroke(0, new BasicStroke(2.0f));
+      
+      XYPlot subplot = new XYPlot(dataset, domainAxis, rangeAxis, renderer);
+      subplot.setDomainGridlinesVisible(true);    
+      plot.add(subplot);
+    }
+    
+    JFreeChart chart = new JFreeChart(
       "Whey protein price history",
-      "Date", // X-Axis Label
-      "Price per kg in €", // Y-Axis Label
-      this.dataset
+      new Font("SansSerif", Font.BOLD, 12),
+      plot,
+      true
     );
-    XYPlot plot = (XYPlot)chart.getPlot();
-    plot.setBackgroundPaint(new Color(255,228,196));
-    XYItemRenderer renderer = plot.getRenderer();
-    final XYLineAndShapeRenderer rr = (XYLineAndShapeRenderer) renderer;
-    XYItemLabelGenerator xy = new StandardXYItemLabelGenerator(
-      StandardXYItemLabelGenerator.DEFAULT_ITEM_LABEL_FORMAT, 
-      NumberFormat.getNumberInstance(),
-      new DecimalFormat("#.##€")
-    );
-    DateAxis valueAxis = (DateAxis) plot.getDomainAxis();
-    valueAxis.setVerticalTickLabels(true);
-    // display dot and value
-    rr.setBaseItemLabelGenerator( xy );
-    rr.setBaseItemLabelsVisible(true);
-    rr.setBaseLinesVisible(true);
-    rr.setBaseItemLabelsVisible(true);  
-
-    // custom colors
-    rr.setSeriesPaint( 0, Color.BLUE );
-    rr.setSeriesPaint( 1, Color.RED );
-    rr.setSeriesPaint( 2, Color.ORANGE );
-    rr.setSeriesPaint( 3, Color.GREEN);
     
-    // custom line weight
-    rr.setSeriesStroke(0, new BasicStroke(2.0f));
-    rr.setSeriesStroke(1, new BasicStroke(2.0f));
-    rr.setSeriesStroke(2, new BasicStroke(2.0f));
-    rr.setSeriesStroke(3, new BasicStroke(2.0f));
-    
-    String dateFormat = "dd/MM/YY";
-    DateAxis axis = (DateAxis) plot.getDomainAxis();
-    axis.setDateFormatOverride(new SimpleDateFormat(dateFormat));
-    axis.setTickUnit(new DateTickUnit(DateTickUnitType.DAY, 1));
     try {
       OutputStream out = new FileOutputStream("tmp.png");
       ChartUtilities.writeChartAsPNG(out,
         chart,
         800,
         600
-      );
-  
+      );  
     } catch (IOException ex) {
         
     }
