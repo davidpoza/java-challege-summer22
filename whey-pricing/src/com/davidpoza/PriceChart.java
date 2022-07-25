@@ -66,20 +66,24 @@ public class PriceChart {
   }
   
   public void buildDataSet() {
-    MyLogger.log(PriceChart.class, LogTypes.DEBUG, "building dataset");
-    for (int i = 0; i < products.size(); i++) {
-      Product p = products.get(i);
-      TimeSeriesCollection dataset = new TimeSeriesCollection();  
-      TimeSeries series = new TimeSeries(p.getName());    
-      MyLogger.log(PriceChart.class, LogTypes.DEBUG, "creating timeseries for " + p.getName());
-      for (int j = 0; j < p.getPrices().size(); j++) {
-        Price price = p.getPrices().get(j);
-        LocalDateTime date = price.getDate();
-        series.add(new Day(date.getDayOfMonth(), date.getMonthValue(), date.getYear()), price.getAmount());
+    try {
+      MyLogger.log(PriceChart.class, LogTypes.DEBUG, "building dataset");
+      for (int i = 0; i < products.size(); i++) {
+        Product p = products.get(i);
+        TimeSeriesCollection dataset = new TimeSeriesCollection();  
+        TimeSeries series = new TimeSeries(p.getName());    
+        MyLogger.log(PriceChart.class, LogTypes.DEBUG, "creating timeseries for " + p.getName());
+        for (int j = 0; j < p.getPrices().size(); j++) {
+          Price price = p.getPrices().get(j);
+          LocalDateTime date = price.getDate();
+          series.add(new Day(date.getDayOfMonth(), date.getMonthValue(), date.getYear()), price.getAmount());
+        }
+        MyLogger.log(PriceChart.class, LogTypes.DEBUG, "adding series to dataset");
+        dataset.addSeries(series);
+        this.datasets.add(dataset);
       }
-      MyLogger.log(PriceChart.class, LogTypes.DEBUG, "adding series to dataset");
-      dataset.addSeries(series);
-      this.datasets.add(dataset);
+    } catch (Exception e) {
+      MyLogger.log(PriceChart.class, LogTypes.DEBUG, e.getMessage());
     }
   }
   
