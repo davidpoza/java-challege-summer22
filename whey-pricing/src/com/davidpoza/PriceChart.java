@@ -81,13 +81,13 @@ public class PriceChart {
   public Color getColor(String brand) {
     switch(Brand.valueOf(brand)) {
     case MYPROTEIN:
-      return Color.BLUE;
+      return new Color(0, 129, 144);
     case HSN:
-      return Color.ORANGE;
+      return new Color(255, 96, 0);
     case PROZIS:
-      return Color.RED;
+      return new Color(190, 41, 27);
     case BULKPOWDERS:
-      return Color.GREEN;
+      return new Color(135, 224, 0);
     default:
       return Color.BLACK;
     }
