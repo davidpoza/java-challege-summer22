@@ -151,9 +151,10 @@ public class PriceChart {
         chart,
         800,
         600
-      );  
-    } catch (IOException ex) {
-        
+      );
+      out.close();
+    } catch (IOException e) {
+      MyLogger.log(PriceChart.class, LogTypes.DEBUG, e.getMessage());
     }
   }
   
