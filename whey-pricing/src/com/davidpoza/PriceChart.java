@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +16,8 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
@@ -45,15 +48,29 @@ public class PriceChart {
   public  PriceChart(Connection con, LocalDateTime from, LocalDateTime to) {
     super();
     this.con = con;
-    this.getAllProducts();
-    this.buildDataSet();
   }
   
+  private ArrayList<Integer> getProductIdsByCommand(String command) {
+    ArrayList<Integer> ret = new ArrayList<>();
+    switch(command) {
+    case "pea":
+      break;
+    case "whey":
+      Collections.addAll(ret, new Integer[] {1, 2, 3, 4,});
+      break;
+    default:
+      break;
+    }
+    return ret;
+  }
   
-  public void getAllProducts() {
+  public void getAllProducts(String command) {
+    ArrayList<Integer> productIds = this.getProductIdsByCommand(command);
     try {
       MyLogger.log(PriceChart.class, LogTypes.DEBUG, "querying all products");
-      PreparedStatement statement = con.prepareStatement("SELECT id, name, url, brand, kg FROM products_tbl");
+      PreparedStatement statement = con.prepareStatement("SELECT id, name, url, brand, kg FROM products_tbl WHERE IN (?)");
+      Array array = con.createArrayOf("INTEGER", productIds.toArray());
+      statement.setArray(1, array);
       statement.execute();
       ResultSet rs = statement.getResultSet();
       while(rs.next()) {
