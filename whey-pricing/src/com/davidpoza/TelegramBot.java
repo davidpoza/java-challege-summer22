@@ -51,7 +51,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         ? System.currentTimeMillis() - creationTime.toMillis()
         : 0;
       MyLogger.log(TelegramBot.class, LogTypes.DEBUG, "Image is " + String.valueOf(imageAgeMs/1000) + " seconds old");
-      if (!doesExist || imageAgeMs > 1 ) { // more than 24h
+      if (!doesExist || imageAgeMs > 86400 ) { // more than 24h
         chart.getAllProducts(command);
         chart.buildDataSet();
         chart.updatePrices();

@@ -38,7 +38,7 @@ public class Product {
   private void readPrices() {
     
     try {
-      PreparedStatement statement = con.prepareStatement("SELECT date, amount, discount, product_id FROM prices_tbl WHERE product_id = ?");
+      PreparedStatement statement = con.prepareStatement("SELECT date, amount, discount, product_id FROM prices_tbl WHERE product_id = ? ORDER BY date ASC");
       statement.setInt(1, this.id);
       statement.execute();
       ResultSet rs = statement.getResultSet();
