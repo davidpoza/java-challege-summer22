@@ -30,15 +30,14 @@ public class TelegramBot extends TelegramLongPollingBot {
   
   private void processCommand(String command, String chatId) {
     MyLogger.log(TelegramBot.class, LogTypes.DEBUG, "Received message");
-    String currentWorkingDir = System.getProperty("user.dir");
-    String filepathStr = currentWorkingDir + "/" + command + ".png";
     final Connection con = DbConnection.connect();
     PriceChart chart = new PriceChart(con, null, null);
     boolean doesExist = true;
     File file = null;
     
     try {
-      file = new File(filepathStr);
+      file = new File(command + ".png");
+      doesExist = file.exists();
     }
     catch (Exception e) {
       doesExist = false;
@@ -56,12 +55,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         chart.getAllProducts(command);
         chart.buildDataSet();
         chart.updatePrices();
-        chart.draw();
+        chart.draw(command);
       }
     } catch (Exception ex) {
       MyLogger.log(TelegramBot.class, LogTypes.DEBUG, ex.getMessage());
     }      
-    this.sendImageUploadingAFile(filepathStr, chatId);
+    this.sendImageUploadingAFile(file.getAbsolutePath(), chatId);
     if (con != null) {
       try {
         con.close();

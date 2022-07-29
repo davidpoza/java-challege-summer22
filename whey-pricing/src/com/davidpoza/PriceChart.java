@@ -65,13 +65,20 @@ public class PriceChart {
   }
   
   public void getAllProducts(String command) {
+    PreparedStatement statement = null;
     ArrayList<Integer> productIds = this.getProductIdsByCommand(command);
+    String productIdsStr = "";
+    for (int i=0; i<productIds.size(); i++) {
+      productIdsStr += String.valueOf(productIds.get(i));
+      if (i<(productIds.size()-1)) productIdsStr += ",";
+    }
     try {
       MyLogger.log(PriceChart.class, LogTypes.DEBUG, "querying all products");
-      PreparedStatement statement = con.prepareStatement("SELECT id, name, url, brand, kg FROM products_tbl WHERE IN (?)");
-      Array array = con.createArrayOf("INTEGER", productIds.toArray());
-      statement.setArray(1, array);
+      statement = con.prepareStatement("SELECT id, name, url, brand, kg FROM products_tbl WHERE id IN ("+ productIdsStr +")");
+//      Array array = con.createArrayOf("INTEGER", productIds.toArray());
+//      statement.setArray(1, array);
       statement.execute();
+      MyLogger.log(PriceChart.class, LogTypes.DEBUG, statement.toString());
       ResultSet rs = statement.getResultSet();
       while(rs.next()) {
         MyLogger.log(PriceChart.class, LogTypes.DEBUG, "fetched product:" + rs.getString("name"));
@@ -119,7 +126,7 @@ public class PriceChart {
     }
   }
   
-  public void draw() {   
+  public void draw(String filename) {   
     MyLogger.log(PriceChart.class, LogTypes.DEBUG, "drawing charts");
     DateAxis domainAxis = new DateAxis("Date");
     String dateFormat = "dd MMM";
@@ -163,7 +170,7 @@ public class PriceChart {
     
     try {
       MyLogger.log(PriceChart.class, LogTypes.DEBUG, "saving chart as image");
-      OutputStream out = new FileOutputStream("tmp.png");
+      OutputStream out = new FileOutputStream(filename + ".png");
       ChartUtilities.writeChartAsPNG(out,
         chart,
         800,
