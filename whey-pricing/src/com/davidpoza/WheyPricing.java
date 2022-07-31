@@ -15,7 +15,7 @@ public class WheyPricing {
   public static void main(String[] args) throws Exception {
     MyLogger.log(WheyPricing.class, LogTypes.DEBUG, "starting...");
     final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    scheduler.scheduleAtFixedRate(new ScraperRunnable(), 0, 8, TimeUnit.SECONDS);
+    scheduler.scheduleAtFixedRate(new ScraperRunnable(), 0, 8, TimeUnit.HOURS);
     try {
       TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
         botsApi.registerBot(new TelegramBot());
