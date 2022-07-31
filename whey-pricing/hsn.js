@@ -4,7 +4,7 @@ const fs = require('fs');
 const products = [
 	'https://www.hsnstore.com/marcas/sport-series/evobeef-hidrolizado-de-carne-2-0-leucina-extra',
 	'https://www.hsnstore.com/marcas/essential-series/proteina-de-guisante-aislada-2-0',
-	'https://www.hsnstore.com/marcas/raw-series/native-whey-concentrate',
+	'https://www.hsnstore.com/marcas/sport-series/evowhey-protein-2-0',
 	'https://www.hsnstore.com/marcas/essential-series/proteina-de-semilla-de-calabaza',
 	'https://www.hsnstore.com/marcas/essential-series/proteina-de-arroz-integral-concentrada',
 	'https://www.hsnstore.com/marcas/food-series/harina-de-arroz-hidrolizada',
