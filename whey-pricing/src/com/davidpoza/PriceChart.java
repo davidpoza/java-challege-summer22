@@ -52,10 +52,17 @@ public class PriceChart {
   private ArrayList<Integer> getProductIdsByCommand(String command) {
     ArrayList<Integer> ret = new ArrayList<>();
     switch(command) {
-    case "pea":
-      break;
     case "whey":
-      Collections.addAll(ret, new Integer[] {1, 2, 3, 4,});
+      Collections.addAll(ret, new Integer[] {1, 2, 3, 4});
+      break;
+    case "meat":
+      Collections.addAll(ret, new Integer[] {7,8,9});
+      break;
+    case "rice":
+      Collections.addAll(ret, new Integer[] {5,6,10});
+      break;
+    case "pea":
+      Collections.addAll(ret, new Integer[] {11,12,13});
       break;
     default:
       break;
@@ -99,7 +106,7 @@ public class PriceChart {
       for (int i = 0; i < products.size(); i++) {
         Product p = products.get(i);
         TimeSeriesCollection dataset = new TimeSeriesCollection();  
-        TimeSeries series = new TimeSeries(p.getName());    
+        TimeSeries series = new TimeSeries(p.getName() + " (" + p.getBrand() +  ")");    
         MyLogger.log(PriceChart.class, LogTypes.DEBUG, "creating timeseries for " + p.getName());
         for (int j = 0; j < p.getPrices().size(); j++) {
           Price price = p.getPrices().get(j);

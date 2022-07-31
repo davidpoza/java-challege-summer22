@@ -13,10 +13,10 @@ public class ScraperRunnable implements Runnable {
   
   @Override
   public void run() {
-    PriceChart chart = new PriceChart(this.con, null, null); 
     try {      
-      String[] commands = {"whey", "pea", "meat"};
+      String[] commands = {"whey", "pea", "meat", "rice"};
       for (int i = 0; i<commands.length; i++) {
+        PriceChart chart = new PriceChart(this.con, null, null); 
         MyLogger.log(ScraperRunnable.class, LogTypes.DEBUG, "refreshing data for " + commands[i] + "chart");
         chart.getAllProducts(commands[i]);
         chart.buildDataSet();

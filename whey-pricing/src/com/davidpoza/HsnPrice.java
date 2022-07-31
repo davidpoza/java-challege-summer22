@@ -3,9 +3,13 @@ package com.davidpoza;
 import java.io.IOException;
 import java.sql.Connection;
 import java.time.LocalDateTime;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
+
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 public class HsnPrice extends Price {
   
@@ -24,21 +28,23 @@ public class HsnPrice extends Price {
   @Override
   public void scrapPrice() throws Exception, IOException {   
     super.scrapPrice();
-    // scraped prices in Hsn always refer to 500g. we calculate the final price applying per-amount discount
-    Double refKg = 0.5;
-    Document doc = null;
-    doc = Jsoup.connect(this.url).get();
-    Elements price = doc.select("div.final-price");
-    if (price.isEmpty()) throw new Exception("Price not found");
-    String s = price.first().text();
-//    this.checkDiscount(doc);
-    if (this.getProduct().getKg() == 2d) this.setDiscount(20d);
-    else if(this.getProduct().getKg() == 4d) this.setDiscount(25d);
-    Double p = this.parsePrice(s);
-    if (this.getDiscount() > 0) {
-      p *= 1 - this.getDiscount()/100;
+    CloseableHttpClient httpClient = HttpClients.createDefault();
+    HttpGet request = new HttpGet("https://files.davidinformatico.com/whey-scraper/hsn.json");
+    CloseableHttpResponse response = httpClient.execute(request);
+    int statusCode = response.getStatusLine().getStatusCode();
+    if (statusCode != 200) {
+      throw new Exception("Price not found");
     }
-    this.setAmount(p / refKg);
+    String jsonString = EntityUtils.toString(response.getEntity());
+    JSONObject obj = new JSONObject(jsonString);
+    JSONObject prices = obj.getJSONObject("prices");
+    try {
+      String price = prices.getString(this.getUrl());
+      Double p = this.parsePrice(price);
+      this.setAmount(p / this.getProduct().getKg());
+    } catch (Exception ex) {
+      throw new Exception("Price not found");
+    }
     this.setDate(LocalDateTime.now());
     System.out.println("New price found for HSN! " + this.getAmount());
   };
