@@ -64,6 +64,7 @@ public class PriceChart {
   }
   
   public void getAllProducts(String command) {
+    this.products.clear();
     PreparedStatement statement = null;
     ArrayList<Integer> productIds = this.getProductIdsByCommand(command);
     String productIdsStr = "";
@@ -88,7 +89,11 @@ public class PriceChart {
     }
   }
   
+  /**
+   * We don't repeat consecutive equal consecutive values
+   */
   public void buildDataSet() {
+    this.datasets.clear();
     try {
       MyLogger.log(PriceChart.class, LogTypes.DEBUG, "building dataset");
       for (int i = 0; i < products.size(); i++) {
@@ -99,7 +104,10 @@ public class PriceChart {
         for (int j = 0; j < p.getPrices().size(); j++) {
           Price price = p.getPrices().get(j);
           LocalDateTime date = price.getDate();
-          series.add(new Day(date.getDayOfMonth(), date.getMonthValue(), date.getYear()), price.getAmount());
+          if (j == 0 || j == p.getPrices().size()-1 || j > 0 && price.getAmount().doubleValue() != p.getPrices().get(j - 1).getAmount().doubleValue()) {  
+            // first and last one always are drawn
+            series.add(new Day(date.getDayOfMonth(), date.getMonthValue(), date.getYear()), price.getAmount());
+          }
         }
         MyLogger.log(PriceChart.class, LogTypes.DEBUG, "adding series to dataset");
         dataset.addSeries(series);
@@ -161,7 +169,7 @@ public class PriceChart {
     }
     
     JFreeChart chart = new JFreeChart(
-      "Whey protein price history",
+      filename.substring(0, 1).toUpperCase() + filename.substring(1) + " price history",
       new Font("SansSerif", Font.BOLD, 12),
       plot,
       true
@@ -185,6 +193,7 @@ public class PriceChart {
     MyLogger.log(PriceChart.class, LogTypes.DEBUG, "updating prices");
     for (int i = 0; i < products.size(); i++) {
       Product p = products.get(i);
+      p.readPrices();
       ArrayList<Price> prices = p.getPrices();
       Price last = prices.size() > 0 ? prices.get(prices.size() - 1) : null;
       LocalDateTime today = LocalDateTime.now();
@@ -208,9 +217,4 @@ public class PriceChart {
     }  
   }
   
-  public void sendToTelegram() {
-    
-
-
-  }
 }

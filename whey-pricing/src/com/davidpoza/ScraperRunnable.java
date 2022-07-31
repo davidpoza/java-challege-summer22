@@ -5,26 +5,27 @@ import java.sql.Connection;
 import com.davidpoza.MyLogger.LogTypes;
 
 public class ScraperRunnable implements Runnable {
-  private PriceChart chart = null;
   private Connection con;
   
   public ScraperRunnable() {
-    this.con = DbConnection.connect();
-    this.chart = new PriceChart(this.con, null, null);    
+    this.con = DbConnection.connect();       
   }
   
   @Override
   public void run() {
+    PriceChart chart = new PriceChart(this.con, null, null); 
     try {      
       String[] commands = {"whey", "pea", "meat"};
       for (int i = 0; i<commands.length; i++) {
+        MyLogger.log(ScraperRunnable.class, LogTypes.DEBUG, "refreshing data for " + commands[i] + "chart");
         chart.getAllProducts(commands[i]);
         chart.buildDataSet();
         chart.updatePrices();
         chart.draw(commands[i]);  
       }
     } catch (Exception ex) {
-      MyLogger.log(TelegramBot.class, LogTypes.DEBUG, ex.getMessage());
+      ex.printStackTrace();
+      MyLogger.log(ScraperRunnable.class, LogTypes.DEBUG, ex.getMessage() + ex.getStackTrace());
     }   
   }
 

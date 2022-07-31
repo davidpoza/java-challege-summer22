@@ -31,7 +31,6 @@ public class TelegramBot extends TelegramLongPollingBot {
   private void processCommand(String command, String chatId) {
     MyLogger.log(TelegramBot.class, LogTypes.DEBUG, "Received message");
     final Connection con = DbConnection.connect();
-    PriceChart chart = new PriceChart(con, null, null);
     boolean doesExist = true;
     File file = null;
     
@@ -51,12 +50,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         ? System.currentTimeMillis() - creationTime.toMillis()
         : 0;
       MyLogger.log(TelegramBot.class, LogTypes.DEBUG, "Image is " + String.valueOf(imageAgeMs/1000) + " seconds old");
-//      if (!doesExist || imageAgeMs > 86400 ) { // more than 24h
-//        chart.getAllProducts(command);
-//        chart.buildDataSet();
-//        chart.updatePrices();
-//        chart.draw(command);
-//      }
     } catch (Exception ex) {
       MyLogger.log(TelegramBot.class, LogTypes.DEBUG, ex.getMessage());
     }      

@@ -2,7 +2,7 @@ package com.davidpoza;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.Timestamp;
+//import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,7 +43,7 @@ public class ProzisPrice extends Price {
     String jsonString = EntityUtils.toString(response.getEntity());
     JSONObject obj = new JSONObject(jsonString);
     String price = obj.getString("price");
-    long ts = obj.getLong("date");
+//    long ts = obj.getLong("date");
     
 //    this.checkDiscount(doc);
     if (this.getProduct().getKg() == 2d) this.setDiscount(20d);
@@ -53,7 +53,8 @@ public class ProzisPrice extends Price {
       p *= 1 - this.getDiscount()/100;
     }
     this.setAmount(p / this.getProduct().getKg());
-    this.setDate(new Timestamp(ts).toLocalDateTime());
+//    this.setDate(new Timestamp(ts).toLocalDateTime());
+    this.setDate(LocalDateTime.now());
     System.out.println("New price found for Prozis! " + this.getAmount());
   }
   
