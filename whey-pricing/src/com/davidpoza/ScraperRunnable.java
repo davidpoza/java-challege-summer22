@@ -14,7 +14,7 @@ public class ScraperRunnable implements Runnable {
   @Override
   public void run() {
     try {      
-      String[] commands = {"whey", "pea", "meat", "rice"};
+      String[] commands = {"whey", "pea", "meat", "rice", "other"};
       for (int i = 0; i<commands.length; i++) {
         PriceChart chart = new PriceChart(this.con, null, null); 
         MyLogger.log(ScraperRunnable.class, LogTypes.DEBUG, "refreshing data for " + commands[i] + "chart");

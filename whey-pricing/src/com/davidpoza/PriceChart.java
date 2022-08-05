@@ -64,6 +64,9 @@ public class PriceChart {
     case "pea":
       Collections.addAll(ret, new Integer[] {11,12,13});
       break;
+    case "other":
+      Collections.addAll(ret, new Integer[] {14,15,16,17,18});
+      break;
     default:
       break;
     }
