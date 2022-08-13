@@ -12,6 +12,8 @@ const products = [
   { url: 'https://www.hsnstore.com/marcas/raw-series/creatina-monohidrato-en-polvo', positionViaText: '1Kg' },
   { url: 'https://www.hsnstore.com/marcas/essential-series/digezyme-200mg', positionViaText: '240' },
   { url: 'https://www.hsnstore.com/marcas/raw-series/aminoacidos-esenciales-eaa-s-en-polvo', positionViaText: '1Kg' },
+  { url: 'https://www.hsnstore.com/marcas/raw-series/colageno-hidrolizado-bovino', positionViaText: '1Kg' },
+  { url: 'https://www.hsnstore.com/marcas/raw-series/l-glutamina-en-polvo', positionViaText: '1Kg' },
 ];
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 const prices = {};

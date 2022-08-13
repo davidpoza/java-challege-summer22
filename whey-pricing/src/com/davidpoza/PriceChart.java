@@ -65,7 +65,7 @@ public class PriceChart {
       Collections.addAll(ret, new Integer[] {11,12,13});
       break;
     case "other":
-      Collections.addAll(ret, new Integer[] {14,15,16,17,18});
+      Collections.addAll(ret, new Integer[] {14,15,16,17,18,19,20});
       break;
     default:
       break;
@@ -155,7 +155,7 @@ public class PriceChart {
     for (int i=0; i < this.datasets.size(); i++) {
       MyLogger.log(PriceChart.class, LogTypes.DEBUG, "drawing chart:" + this.products.get(i).getBrand());
       XYDataset dataset = this.datasets.get(i);
-      NumberAxis rangeAxis = new NumberAxis("Price per kg in €");
+      NumberAxis rangeAxis = new NumberAxis("€/Kg");
       rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
       
       XYLineAndShapeRenderer renderer = new  XYLineAndShapeRenderer();
